@@ -1,4 +1,4 @@
-let searchString = '';
+var searchString = '';
 var time;
 var isChecked;
 const url = 'http://50.21.190.71/get_tweets';
@@ -67,7 +67,7 @@ $(document).on('keyup', function (event)
 {
     if (event.key === 'Enter' || event.keyCode === 13) 
     {
-        console.log(document.getElementById('search-box').value);
+        searchString = document.getElementById('search-box').value;
         document.getElementById('search-box').value = '';
     }
 });
@@ -94,6 +94,41 @@ function getRequest()
     fetch(url).then(res => res.json()).then(data => 
     {
         console.log(data);
+        const tweetContainer = document.getElementById('tweet-container');
+        refreshTweets(data);
+        /**
+         * Removes all existing tweets from tweetList and then append all tweets back in
+         *
+         * @param {Array<Object>} tweets - A list of tweets
+         * @returns None, the tweets will be renewed
+         */
+        function refreshTweets(tweets) {
+            // feel free to use a more complicated heuristics like in-place-patch, for simplicity, we will clear all tweets and append all tweets back
+            // {@link https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript}
+            while (tweetContainer.firstChild) {
+                tweetContainer.removeChild(tweetContainer.firstChild);
+            }
+
+            const tweetList = document.createElement("ul"); // create an unordered list to hold the tweets https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+            tweetContainer.appendChild(tweetList); // append the tweetList to the tweetContainer https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
+
+            // all tweet objects (no duplicates) stored in tweets variable
+            const filteredResult = tweets;
+            //const filteredResult = tweets.filter(searchString); // filter on search text https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+            const sortedResult = filteredResult.sort(function(a, b) { return Date.parse(b) - Date.parse(a); }); // sort by date https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort and https://stackoverflow.com/a/69754377
+
+            // execute the arrow function for each tweet
+            // {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
+            sortedResult.forEach(tweetObject => 
+            {
+                const tweet = document.createElement("li"); // create a container for individual tweet
+                const tweetContent = document.createElement("div"); // e.g. create a div holding tweet content
+                const tweetText = document.createTextNode(tweetObject.text); // create a text node "safely" with HTML characters escaped https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode
+                tweetContent.appendChild(tweetText); // append the text node to the div
+                tweet.appendChild(tweetContent); // you may want to put more stuff here like time, username...
+                tweetList.appendChild(tweet); // finally append your tweet into the tweet list
+            });
+        }
         // do something with data
         // remove dupes
         // set center div to be tweets
