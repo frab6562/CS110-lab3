@@ -1,39 +1,33 @@
+let searchString = '';
+var time;
+var isChecked;
+const url = 'http://50.21.190.71/get_tweets';
+
 $(document).ready(function() {
-    const url = 'http://50.21.190.71/get_tweets';  
+    
     // reset changes from previous usage
     // previous tweets
     // checkbox
     // if there's still text in search bar
 
-    function autorefresh() {
+    autoRefresh();
+    function autoRefresh() 
+    {
         // get status of checkbox
-        var isChecked = document.getElementById('feedRefresh').checked;
+        
         // if not checked, call fetch every X seconds
-        if (isChecked == false)
+        if (!isChecked)
         {
-            time = setInterval(function() {
+            time = setInterval(function() 
+            {
                 getRequest();
             }, 10000);
         }
-        else if (isChecked == true)
+        else if (isChecked)
         {
-            // if checked, want it o pause, clear interval
+            // if checked, want it to pause, clear interval
             clearInterval(time);
         }
-    }
-
-    function getRequest()
-    {
-        fetch(url)
-        .then(res => res.json()).then(data=> {
-            // do something with data
-            // remove dupes
-            // set center div to be tweets
-            // when search is activated, search all tweets for matching values, set current tweets to be ones that match search value
-        })
-        .catch(err=> {
-            console.log(err);
-        })
     }
 
     function removeDuplicates(duplicatesDataArr)
@@ -57,14 +51,58 @@ $(document).ready(function() {
             // create div that can append to content-center
             // include pfp
                 // check if image exists
-                // var http = new XTMLHttpRequest();
+                // var http = new XMLHttpRequest();
                 // http.open("HEAD", imgURL);
                 // http.send();
                 // if (http.status != 404)
-                //{
-                // add image to tweet that is being created
-                //}
+                // {
+                //     //add image to tweet that is being created
+                // }
         // create all additional pieces of info
             // like formatted date, tweet contents, username
     }
 })
+
+$(document).on('keyup', function (event) 
+{
+    if (event.key === 'Enter' || event.keyCode === 13) 
+    {
+        console.log(document.getElementById('search-box').value);
+        document.getElementById('search-box').value = '';
+    }
+});
+
+$(document).on('change', '#feedRefresh', function() 
+{
+    if($('#feedRefresh').is(':checked')) 
+    {
+        alert('Pausing tweet refreshing');
+        clearInterval(time);
+    }
+    else
+    {
+        alert('Resuming tweet refreshing');
+        time = setInterval(function() 
+        {
+            getRequest();
+        }, 10000);
+    }
+});
+
+function getRequest()
+{
+    fetch(url).then(res => res.json()).then(data => 
+    {
+        console.log(data);
+        // do something with data
+        // remove dupes
+        // set center div to be tweets
+        // when search is activated, search all tweets for matching values, set current tweets to be ones that match search value
+        //removeDuplicates(data)
+        //appendTweet(data)
+    })
+    .catch(err => 
+    {
+        console.log(err);
+    })
+}
