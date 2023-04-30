@@ -138,6 +138,7 @@ function getRequest()
                 const atsymbol = document.createElement("span");
                 atsymbol.setAttribute('style', 'color: gray; font-weight: normal;');
                 var atsymbolusertag = tweetObject.user_name.replace(/[^\p{L}\p{N}\p{P}\p{Z}^$\n]/gu, '');
+                atsymbolusertag = atsymbolusertag.replace(/[&\/\\#,+()$~%.'":*?<>{}@]/g,'');
                 var postDate = tweetObject.date;
                 postDate = postDate.split('-');
                 const year = postDate[0];
