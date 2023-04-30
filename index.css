@@ -224,6 +224,13 @@ nav img {
   color:rgb(0, 172, 238);
 }
 
+#search-box {
+  display:inline-block; 
+  width:75%; 
+  height:100%; 
+  margin-right:10px;
+}
+
 @media (max-width: 1200px) {
   #content-right {
     display:none;
