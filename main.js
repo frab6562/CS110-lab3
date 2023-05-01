@@ -4,7 +4,6 @@ const url = 'http://50.21.190.71/get_tweets';
 var holdAllTweets = [];
 var currTweets = [];
 var searchTweets = [];
-var enter = false;
 
 $(document).ready(function() 
 {
@@ -33,29 +32,53 @@ $(document).ready(function()
     }
 })
 
-$(document).on('keyup', function (event) 
+var oldSearchString;
+
+
+// $(document).on('keyup', function (event) 
+// {
+//     if(event.key === 'Enter' || event.keyCode === 13) 
+//     {
+//         for (var cnt = 0; cnt < holdAllTweets.length; cnt++)
+//         {
+//             if(holdAllTweets[cnt].text.includes(searchString))
+//             {
+//                 searchTweets.push(holdAllTweets[cnt]);
+//             } 
+//         }
+//         currTweets = new Array();
+//     }
+// });
+
+setInterval(function() 
 {
-    if(event.key === 'Enter' || event.keyCode === 13) 
+    searchString = oldSearchString;
+    searchString = document.getElementById('search-box').value;
+    if (searchString === oldSearchString)
     {
-        searchString = document.getElementById('search-box').value;
-        if (searchString)
+        for (var cnt = 0; cnt < currTweets.length; cnt++)
         {
-            //console.log('searchString is ' + searchString);
-            for (var cnt = 0; cnt < currTweets.length; cnt++)
+            if(currTweets[cnt].text.includes(searchString))
             {
-                if(currTweets[cnt].text.includes(searchString)) // need to add duplicate detection here
-                {
-                    searchTweets.push(currTweets[cnt]);
-                } 
-            }
-            currTweets = new Array();
+                searchTweets.push(currTweets[cnt]);
+            } 
         }
-        else
-        {
-            console.log('searchString empty, clear value for var that prevents new pulled tweets from appearing in getRequest');
-        }
+        currTweets = new Array();
     }
-});
+    else if (searchString !== oldSearchString)
+    {
+            searchTweets.length = 0;
+        for (var cnt = 0; cnt < currTweets.length; cnt++)
+        {
+            if(currTweets[cnt].text.includes(searchString))
+            {
+                searchTweets.push(currTweets[cnt]);
+            } 
+        }
+        currTweets = new Array();
+        oldSearchString = searchString;
+    }
+}, 5000);
 
 $(document).on('change', '#feedRefresh', function() 
 {
