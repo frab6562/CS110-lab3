@@ -1,3 +1,4 @@
+//CS110 Lab3 Francisco Bustamante & Nicholas Chao
 var searchString = '';
 var time;
 const url = 'http://50.21.190.71/get_tweets';
@@ -5,9 +6,6 @@ var holdAllTweets = [];
 var currTweets = [];
 var searchTweets = [];
 
-/*
-
-*/
 $(document).ready(function()
 {
     document.getElementById('feedRefresh').value='1';
